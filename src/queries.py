@@ -7,10 +7,10 @@ class SQL_Queries:
             SELECT
                 strftime('%Y-%m', registration_date) AS month,
                 COUNT(DISTINCT user_id) AS user_count
-            FROM Users 
+            FROM users 
             WHERE registration_date > (
                 SELECT date(MAX(registration_date), '-12 months') 
-                FROM Users
+                FROM users
             )
             GROUP BY month 
             ORDER BY month
@@ -20,13 +20,13 @@ class SQL_Queries:
         def active_customers():
             return  """
             SELECT
-                strftime('%Y-%m', Users.registration_date) AS month,
-                COUNT(DISTINCT Users.user_id) AS user_count
-            FROM Users
-            JOIN Transactions ON Users.user_id = Transactions.user_id
+                strftime('%Y-%m', users.registration_date) AS month,
+                COUNT(DISTINCT users.user_id) AS user_count
+            FROM users
+            JOIN transactions ON users.user_id = transactions.user_id
              WHERE registration_date > (
                 SELECT date(MAX(registration_date), '-12 months') 
-                FROM Users
+                FROM users
             )
             GROUP BY month 
             ORDER BY month
@@ -39,10 +39,10 @@ class SQL_Queries:
                 strftime('%Y-%m', transaction_date) AS month,
                 COUNT(DISTINCT transaction_id) AS transaction_count,
                 SUM(transaction_amount) as transaction_amount
-            FROM Transactions 
+            FROM transactions 
             WHERE transaction_date > (
                 SELECT date(MAX(transaction_date), '-12 months') 
-                FROM Transactions
+                FROM transactions
             )
             GROUP BY month 
             ORDER BY month
@@ -56,10 +56,10 @@ class SQL_Queries:
                 installments_count,
                 COUNT(DISTINCT transaction_id) AS transaction_count, 
                 SUM(transaction_amount) as transaction_amount
-            FROM Transactions 
+            FROM transactions 
             WHERE transaction_date > (
                 SELECT date(MAX(transaction_date), '-12 months') 
-                FROM Transactions
+                FROM transactions
             )
             GROUP BY month, installments_count
             ORDER BY month, installments_count
@@ -69,14 +69,14 @@ class SQL_Queries:
         def popular_categories():
             return """
             SELECT
-                strftime('%Y-%m', Transactions.transaction_date) AS month,
-                Merchants.category,
-                COUNT(DISTINCT Transactions.transaction_id) as transaction_count
-            FROM Merchants
-            JOIN Transactions ON Merchants.merchant_id = Transactions.merchant_id
+                strftime('%Y-%m', transactions.transaction_date) AS month,
+                merchants.category,
+                COUNT(DISTINCT transactions.transaction_id) as transaction_count
+            FROM merchants
+            JOIN transactions ON merchants.merchant_id = transactions.merchant_id
             WHERE transaction_date > (
                 SELECT date(MAX(transaction_date), '-12 months') 
-                FROM Transactions
+                FROM transactions
             )
             GROUP BY month
             ORDER BY month
@@ -96,7 +96,7 @@ class SQL_Queries:
                         ELSE 0
                     END AS INTEGER
                 ) AS dpd
-            FROM Installments
+            FROM installments
             """
         
         @staticmethod
@@ -113,7 +113,7 @@ class SQL_Queries:
                         ELSE 0
                     END AS INTEGER
                 ) AS dpd
-            FROM Installments)
+            FROM installments)
             SELECT 
                 transaction_id,
                 CASE WHEN MAX(dpd) >= 90 THEN 1 ELSE 0 END as dpd90
@@ -125,12 +125,12 @@ class SQL_Queries:
         def calculate_dpd90_trend():
             return """
             SELECT 
-                Transactions.transaction_id,
-                Transactions.user_id,
-                Users.age,
-                Users.income
-            FROM Transactions
-            JOIN Users ON Transactions.user_id = Users.user_id
+                transactions.transaction_id,
+                transactions.user_id,
+                users.age,
+                users.income
+            FROM transactions
+            JOIN users ON transactions.user_id = users.user_id
             """
     
     class Vintage:
