@@ -17,11 +17,8 @@ source .venv/Scriptspi/activate
 ```
 pip install -r requirements.txt
 ```
-### 4. Install project as editable package:
-```
-pip install -e .
-```
-### 5. Run notebooks:
+
+### 4. Run notebooks:
 ```
 jupyter notebook
 ```
