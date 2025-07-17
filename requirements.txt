@@ -1,0 +1,4 @@
+pandas
+pydantic
+sqlite3
+jupyter
