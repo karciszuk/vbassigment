@@ -1,34 +1,34 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from datetime import date
-from typing import Optional, Literal
+from typing import Optional
 
 class User(BaseModel):
     user_id: int
     registration_date: date
-    age: int = Field(ge=18)
-    income: int = Field(ge=0)
-    credit_score: int = Field(ge=300, le=850)
+    age: int
+    income: int
+    credit_score: int
 
 class Transaction(BaseModel):
-    transaction_id: int = Field(ge=1, le=500000)
-    user_id: int = Field(ge=1, le=100000)
-    merchant_id: int = Field(ge=1000, le=9999)
-    transaction_amount: float = Field(gt=0.0)
-    installments_count: Literal[4, 6, 12, 24]
+    transaction_id: int
+    user_id: int
+    merchant_id: int
+    transaction_amount: float
+    installments_count: int
     transaction_date: date
 
 class Installment(BaseModel):
-    installment_id: int = Field(ge=1, le=2000000)
-    transaction_id: int = Field(ge=1, le=500000)
-    installment_number: int = Field(ge=1, le=24)
+    installment_id: int
+    transaction_id: int
+    installment_number: int
     scheduled_date: date
-    payment_date: Optional[date] = None
-    scheduled_amount: float = Field(ge=0.0)
-    paid_amount: float = Field(ge=0.0)
+    payment_date: Optional[date]
+    scheduled_amount: float
+    paid_amount: float
 
 class Merchant(BaseModel):
-    merchant_id: int = Field(ge=1000, le=9999)
+    merchant_id: int
     merchant_name: str
-    category: Literal["electronics", "fashion", "home", "sports", "beauty"]
+    category: str
     onboarding_date: date
-    partnership_status: Literal["active", "inactive"]
+    partnership_status: str

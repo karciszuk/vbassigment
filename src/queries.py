@@ -4,7 +4,7 @@ class SQL_Queries:
         @staticmethod
         def new_customers():
             return """
-            SELECT COUNT(DISTINCT user_id) AS user_count, strftime('%Y-%m', registration_date) AS month 
+            SELECT strftime('%Y-%m', registration_date) AS month, COUNT(DISTINCT user_id) AS user_count
             FROM Users 
             WHERE registration_date > (
                 SELECT date(MAX(registration_date), '-12 months') 
@@ -17,7 +17,7 @@ class SQL_Queries:
         @staticmethod
         def active_customers():
             return  """
-            SELECT COUNT(DISTINCT Users.user_id) AS user_count, strftime('%Y-%m', Users.registration_date) AS month
+            SELECT strftime('%Y-%m', Users.registration_date) AS month, COUNT(DISTINCT Users.user_id) AS user_count
             FROM Users
             JOIN Transactions ON Users.user_id = Transactions.user_id
              WHERE registration_date > (
@@ -31,7 +31,7 @@ class SQL_Queries:
         @staticmethod
         def transaction_volume():
             return """
-            SELECT COUNT(DISTINCT transaction_id) AS transaction_count, SUM(transaction_amount) as transaction_amount, strftime('%Y-%m', transaction_date) AS month 
+            SELECT strftime('%Y-%m', transaction_date) AS month, COUNT(DISTINCT transaction_id) AS transaction_count, SUM(transaction_amount) as transaction_amount
             FROM Transactions 
             WHERE transaction_date > (
                 SELECT date(MAX(transaction_date), '-12 months') 
@@ -44,9 +44,17 @@ class SQL_Queries:
         @staticmethod
         def installment_plans():
             return """
-            SELECT installment_number, SUM(scheduled_amount) as total
-            FROM Installments
-            GROUP BY installment_number
+            SELECT strftime('%Y-%m', transaction_date) AS month, 
+                installments_count,
+                COUNT(DISTINCT transaction_id) AS transaction_count, 
+                SUM(transaction_amount) as transaction_amount
+            FROM Transactions 
+            WHERE transaction_date > (
+                SELECT date(MAX(transaction_date), '-12 months') 
+                FROM Transactions
+            )
+            GROUP BY month, installments_count
+            ORDER BY month, installments_count
             """
         
         @staticmethod
