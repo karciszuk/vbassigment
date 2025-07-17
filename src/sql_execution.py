@@ -1,8 +1,9 @@
 import sqlite3
+import pandas as pd
 
 class SQL_Executor():
-    def __init__(self, db_path):
-        self.db_path = db_path
+    def __init__(self):
+        self.db_path = 'D:/VB/viabill.db'
         self.conn, self.cur = self.create_connection()
 
     def create_connection(self):
@@ -21,6 +22,10 @@ class SQL_Executor():
         except sqlite3.Error as e:
             print(f"Query failed: {e}")
             raise
+
+    def display_results(self, results):
+        results_df = pd.DataFrame(results, columns=[col[0] for col in self.cur.description])
+        return results_df
 
     def cleanup(self):
         if self.cur:

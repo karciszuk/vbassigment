@@ -16,11 +16,30 @@ class SQL_Queries:
         
         @staticmethod
         def active_customers():
-            return 
+            return  """
+            SELECT COUNT(DISTINCT Users.user_id) AS user_count, strftime('%Y-%m', Users.registration_date) AS month
+            FROM Users
+            JOIN Transactions ON Users.user_id = Transactions.user_id
+             WHERE registration_date > (
+                SELECT date(MAX(registration_date), '-12 months') 
+                FROM Users
+            )
+            GROUP BY month 
+            ORDER BY month
+            """
         
         @staticmethod
         def transaction_volume():
-            return
+            return """
+            SELECT COUNT(DISTINCT transaction_id) AS transaction_count, SUM(transaction_amount) as transaction_amount, strftime('%Y-%m', transaction_date) AS month 
+            FROM Transactions 
+            WHERE transaction_date > (
+                SELECT date(MAX(transaction_date), '-12 months') 
+                FROM Transactions
+            )
+            GROUP BY month 
+            ORDER BY month
+            """
         
         @staticmethod
         def installment_plans():
@@ -28,7 +47,13 @@ class SQL_Queries:
         
         @staticmethod
         def popular_categories():
-            return
+            return """
+            SELECT category, COUNT(DISTINCT Transactions.transaction_id) as transaction_count
+            FROM merchants
+            JOIN Transactions ON merchants.merchant_id = Transactions.merchant_id
+            GROUP BY category
+            ORDER BY transaction_count DESC
+            """
     
     class Payment:
         @staticmethod
