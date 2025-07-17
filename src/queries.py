@@ -69,12 +69,17 @@ class SQL_Queries:
         def popular_categories():
             return """
             SELECT
-                category,
+                strftime('%Y-%m', Transactions.transaction_date) AS month,
+                Merchants.category,
                 COUNT(DISTINCT Transactions.transaction_id) as transaction_count
-            FROM merchants
-            JOIN Transactions ON merchants.merchant_id = Transactions.merchant_id
-            GROUP BY category
-            ORDER BY transaction_count DESC
+            FROM Merchants
+            JOIN Transactions ON Merchants.merchant_id = Transactions.merchant_id
+            WHERE transaction_date > (
+                SELECT date(MAX(transaction_date), '-12 months') 
+                FROM Transactions
+            )
+            GROUP BY month
+            ORDER BY month
             """
     
     class Payment:

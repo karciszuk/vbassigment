@@ -1,9 +1,10 @@
 import sqlite3
 import pandas as pd
+import os
 
 class SQL_Executor():
     def __init__(self):
-        self.db_path = 'D:/VB/viabill.db'
+        self.db_path = os.getenv('DB_PATH')
         self.conn = self.create_connection()
 
     def create_connection(self):
