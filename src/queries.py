@@ -4,7 +4,9 @@ class SQL_Queries:
         @staticmethod
         def new_customers():
             return """
-            SELECT strftime('%Y-%m', registration_date) AS month, COUNT(DISTINCT user_id) AS user_count
+            SELECT
+                strftime('%Y-%m', registration_date) AS month,
+                COUNT(DISTINCT user_id) AS user_count
             FROM Users 
             WHERE registration_date > (
                 SELECT date(MAX(registration_date), '-12 months') 
@@ -17,7 +19,9 @@ class SQL_Queries:
         @staticmethod
         def active_customers():
             return  """
-            SELECT strftime('%Y-%m', Users.registration_date) AS month, COUNT(DISTINCT Users.user_id) AS user_count
+            SELECT
+                strftime('%Y-%m', Users.registration_date) AS month,
+                COUNT(DISTINCT Users.user_id) AS user_count
             FROM Users
             JOIN Transactions ON Users.user_id = Transactions.user_id
              WHERE registration_date > (
@@ -31,7 +35,10 @@ class SQL_Queries:
         @staticmethod
         def transaction_volume():
             return """
-            SELECT strftime('%Y-%m', transaction_date) AS month, COUNT(DISTINCT transaction_id) AS transaction_count, SUM(transaction_amount) as transaction_amount
+            SELECT 
+                strftime('%Y-%m', transaction_date) AS month,
+                COUNT(DISTINCT transaction_id) AS transaction_count,
+                SUM(transaction_amount) as transaction_amount
             FROM Transactions 
             WHERE transaction_date > (
                 SELECT date(MAX(transaction_date), '-12 months') 
@@ -44,7 +51,8 @@ class SQL_Queries:
         @staticmethod
         def installment_plans():
             return """
-            SELECT strftime('%Y-%m', transaction_date) AS month, 
+            SELECT 
+                strftime('%Y-%m', transaction_date) AS month, 
                 installments_count,
                 COUNT(DISTINCT transaction_id) AS transaction_count, 
                 SUM(transaction_amount) as transaction_amount
@@ -60,7 +68,9 @@ class SQL_Queries:
         @staticmethod
         def popular_categories():
             return """
-            SELECT category, COUNT(DISTINCT Transactions.transaction_id) as transaction_count
+            SELECT
+                category,
+                COUNT(DISTINCT Transactions.transaction_id) as transaction_count
             FROM merchants
             JOIN Transactions ON merchants.merchant_id = Transactions.merchant_id
             GROUP BY category
@@ -70,15 +80,53 @@ class SQL_Queries:
     class Payment:
         @staticmethod
         def define_dpd_aggregate():
-            return
+            return """
+            SELECT 
+                transaction_id,
+                installment_number,
+                CAST(
+                    CASE
+                        WHEN payment_date IS NULL THEN julianday('now') - julianday(scheduled_date) 
+                        WHEN payment_date > scheduled_date THEN julianday(payment_date) - julianday(scheduled_date)
+                        ELSE 0
+                    END AS INTEGER
+                ) AS dpd
+            FROM Installments
+            """
         
         @staticmethod
         def define_dpd90_rate():
-            return
+            return """
+            WITH DPD_Aggregate AS (
+                SELECT 
+                transaction_id,
+                installment_number,
+                CAST(
+                    CASE
+                        WHEN payment_date IS NULL THEN julianday('now') - julianday(scheduled_date) 
+                        WHEN payment_date > scheduled_date THEN julianday(payment_date) - julianday(scheduled_date)
+                        ELSE 0
+                    END AS INTEGER
+                ) AS dpd
+            FROM Installments)
+            SELECT 
+                transaction_id,
+                CASE WHEN MAX(dpd) >= 90 THEN 1 ELSE 0 END as dpd90
+            FROM DPD_Aggregate
+            GROUP BY transaction_id
+            """
         
         @staticmethod
         def calculate_dpd90_trend():
-            return
+            return """
+            SELECT 
+                Transactions.transaction_id,
+                Transactions.user_id,
+                Users.age,
+                Users.income
+            FROM Transactions
+            JOIN Users ON Transactions.user_id = Users.user_id
+            """
     
     class Vintage:
         @staticmethod

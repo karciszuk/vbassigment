@@ -17,7 +17,7 @@ class SQL_Executor():
     def execute_query(self, query):
         try:
             df = pd.read_sql_query(query, self.conn)
-            return print(df.to_string(index=False))
+            return df
         except sqlite3.Error as e:
             print(f"Query failed: {e}")
             raise
