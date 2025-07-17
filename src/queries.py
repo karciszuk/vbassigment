@@ -43,7 +43,11 @@ class SQL_Queries:
         
         @staticmethod
         def installment_plans():
-            return
+            return """
+            SELECT installment_number, SUM(scheduled_amount) as total
+            FROM Installments
+            GROUP BY installment_number
+            """
         
         @staticmethod
         def popular_categories():
