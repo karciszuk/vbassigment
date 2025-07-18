@@ -11,7 +11,7 @@ python -m venv .venv
 ```
 #### Mac/Linux
 ```
-source .venv/Scriptspi/activate
+source .venv/Scripts/activate
 ```
 ### 3. Install dependencies:
 ```
