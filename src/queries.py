@@ -6,10 +6,10 @@ class SQL_Queries:
             return """
             SELECT
                 strftime('%Y-%m', registration_date) AS month,
-                COUNT(DISTINCT user_id) AS user_count
+                COUNT(DISTINCT user_id) AS new_user_count
             FROM users 
             WHERE registration_date > (
-                SELECT date(MAX(registration_date), '-12 months') 
+                SELECT date(MAX(registration_date), '-11 months') 
                 FROM users
             )
             GROUP BY month 
@@ -21,11 +21,11 @@ class SQL_Queries:
             return  """
             SELECT
                 strftime('%Y-%m', users.registration_date) AS month,
-                COUNT(DISTINCT users.user_id) AS user_count
+                COUNT(DISTINCT users.user_id) AS active_user_count
             FROM users
             JOIN transactions ON users.user_id = transactions.user_id
              WHERE registration_date > (
-                SELECT date(MAX(registration_date), '-12 months') 
+                SELECT date(MAX(registration_date), '-11 months') 
                 FROM users
             )
             GROUP BY month 
@@ -41,7 +41,7 @@ class SQL_Queries:
                 SUM(transaction_amount) as transaction_amount
             FROM transactions 
             WHERE transaction_date > (
-                SELECT date(MAX(transaction_date), '-12 months') 
+                SELECT date(MAX(transaction_date), '-11 months') 
                 FROM transactions
             )
             GROUP BY month 
@@ -53,16 +53,17 @@ class SQL_Queries:
             return """
             SELECT 
                 strftime('%Y-%m', transaction_date) AS month, 
-                installments_count,
-                COUNT(DISTINCT transaction_id) AS transaction_count, 
-                SUM(transaction_amount) as transaction_amount
+                SUM(CASE WHEN installments_count = 4 THEN transaction_amount ELSE 0 END) AS "4_installment_transaction_volume",
+                SUM(CASE WHEN installments_count = 6 THEN transaction_amount ELSE 0 END) AS "6_installment_transaction_volume", 
+                SUM(CASE WHEN installments_count = 12 THEN transaction_amount ELSE 0 END) AS "12_installment_transaction_volume",
+                SUM(CASE WHEN installments_count = 24 THEN transaction_amount ELSE 0 END) AS "24_installment_transaction_volume"
             FROM transactions 
             WHERE transaction_date > (
-                SELECT date(MAX(transaction_date), '-12 months') 
+                SELECT date(MAX(transaction_date), '-11 months') 
                 FROM transactions
             )
-            GROUP BY month, installments_count
-            ORDER BY month, installments_count
+            GROUP BY month
+            ORDER BY month
             """
         
         @staticmethod
@@ -71,11 +72,11 @@ class SQL_Queries:
             SELECT
                 strftime('%Y-%m', transactions.transaction_date) AS month,
                 merchants.category,
-                COUNT(DISTINCT transactions.transaction_id) as transaction_count
+                COUNT(DISTINCT transactions.transaction_id) as category_transaction_count
             FROM merchants
             JOIN transactions ON merchants.merchant_id = transactions.merchant_id
             WHERE transaction_date > (
-                SELECT date(MAX(transaction_date), '-12 months') 
+                SELECT date(MAX(transaction_date), '-11 months') 
                 FROM transactions
             )
             GROUP BY month
