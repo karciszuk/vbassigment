@@ -90,36 +90,14 @@ class SQL_Queries:
             SELECT 
                 transaction_id,
                 installment_number,
-                CAST(
-                    CASE
-                        WHEN payment_date IS NULL THEN julianday('now') - julianday(scheduled_date) 
-                        WHEN payment_date > scheduled_date THEN julianday(payment_date) - julianday(scheduled_date)
-                        ELSE 0
-                    END AS INTEGER
-                ) AS dpd
+                payment_date,
+                scheduled_date
             FROM installments
             """
         
         @staticmethod
         def define_dpd90_rate():
             return """
-            WITH DPD_Aggregate AS (
-                SELECT 
-                transaction_id,
-                installment_number,
-                CAST(
-                    CASE
-                        WHEN payment_date IS NULL THEN julianday('now') - julianday(scheduled_date) 
-                        WHEN payment_date > scheduled_date THEN julianday(payment_date) - julianday(scheduled_date)
-                        ELSE 0
-                    END AS INTEGER
-                ) AS dpd
-            FROM installments)
-            SELECT 
-                transaction_id,
-                CASE WHEN MAX(dpd) >= 90 THEN 1 ELSE 0 END as dpd90
-            FROM DPD_Aggregate
-            GROUP BY transaction_id
             """
         
         @staticmethod
