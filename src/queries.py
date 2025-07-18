@@ -136,7 +136,18 @@ class SQL_Queries:
     class Vintage:
         @staticmethod
         def group_by_first_transaction():
-            return
+            return """
+            SELECT 
+                MIN(strftime('%Y-%m', transaction_date)) AS month,
+                user_id
+            FROM transactions 
+            WHERE transaction_date > (
+                SELECT date(MAX(transaction_date), '-12 months') 
+                FROM transactions
+            )
+            GROUP BY user_id
+            ORDER BY month
+            """
 
         @staticmethod
         def dpd90_status_after_months():
