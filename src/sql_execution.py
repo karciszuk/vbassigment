@@ -5,9 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-class SQL_Executor():
+
+class SQL_Executor:
     def __init__(self):
-        self.db_path = os.getenv('DB_PATH')
+        self.db_path = os.getenv("DB_PATH")
         self.conn = self.create_connection()
 
     def create_connection(self):

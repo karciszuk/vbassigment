@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import date
 from typing import ClassVar
 
+
 class User(BaseModel):
     table_name: ClassVar[str] = "users"
     user_id: int
@@ -9,6 +10,7 @@ class User(BaseModel):
     age: int
     income: int
     credit_score: int
+
 
 class Transaction(BaseModel):
     table_name: ClassVar[str] = "transaction"
@@ -19,6 +21,7 @@ class Transaction(BaseModel):
     installments_count: int
     transaction_date: date
 
+
 class Installment(BaseModel):
     table_name: ClassVar[str] = "installment"
     installment_id: int
@@ -28,6 +31,7 @@ class Installment(BaseModel):
     payment_date: date
     scheduled_amount: float
     paid_amount: float
+
 
 class Merchant(BaseModel):
     table_name: ClassVar[str] = "merchant"
