@@ -1,4 +1,7 @@
 pandas
+numpy
+matplotlib
 pydantic
-sqlite3
 jupyter
+dotenv
+ruff

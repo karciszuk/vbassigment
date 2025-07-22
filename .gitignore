@@ -1,6 +1,9 @@
 .venv
+venv
 __pycache__
 .env
 viabill.db
 .ipynb_checkpoints
 .pytest_cache
+.ruff_cache
+.git

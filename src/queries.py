@@ -113,24 +113,22 @@ class SQL_Queries:
 
     class Vintage:
         @staticmethod
-        def group_by_first_transaction():
+        def q1():
             return """
             SELECT 
-                MIN(strftime('%Y-%m', transaction_date)) AS month,
-                user_id
+                transaction_id,
+                user_id,
+                transaction_date
             FROM transactions 
-            WHERE transaction_date > (
-                SELECT date(MAX(transaction_date), '-12 months') 
-                FROM transactions
-            )
-            GROUP BY user_id
-            ORDER BY month
             """
 
         @staticmethod
-        def dpd90_status_after_months():
-            return
-
-        @staticmethod
-        def dpd90_percentage_per_month():
-            return
+        def q2():
+            return """
+            SELECT 
+                transaction_id,
+                installment_number,
+                payment_date,
+                scheduled_date
+            FROM installments
+            """

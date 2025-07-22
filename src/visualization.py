@@ -1,12 +1,13 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+from typing import Self, Any
 
 
 class Vizualizator:
-    def __init__(self, df):
+    def __init__(self, df: pd.DataFrame):
         self.df = df
 
-    def _create_labels(self, bins_inc):
+    def _create_labels(self, bins_inc: list[int]) -> tuple[list[str], list[str]]:
         labels = []
         bins = bins_inc + [float("inf")]
         for i in range(len(bins) - 1):
@@ -15,13 +16,19 @@ class Vizualizator:
             else:
                 label = f"{bins[i]}-{bins[i + 1] - 1}"
             labels.append(label)
-        return labels
+        return bins, labels
 
-    def group_by_column(self, bins, target_column, column, drop_column=None):
+    def group_by_column(
+        self,
+        bins_inc: list[str],
+        target_column: str,
+        column: str,
+        drop_column: str = None,
+    ) -> Self:
+        bins, labels = self._create_labels(bins_inc)
+
         if drop_column:
             self.df = self.df.copy().drop(columns=drop_column)
-
-        labels = self._create_labels(bins)
 
         group_column = f"group_{column}"
         self.df[group_column] = pd.cut(self.df[column], bins=bins, labels=labels)
@@ -33,7 +40,7 @@ class Vizualizator:
 
         return self
 
-    def visualize(self, **kwargs):
+    def visualize(self, **kwargs: Any) -> None:
         v_df = self.df
         if "index" in kwargs:
             v_df = v_df.set_index(kwargs["index"])
