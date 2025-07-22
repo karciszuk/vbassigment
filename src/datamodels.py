@@ -23,7 +23,7 @@ class Transaction(BaseModel):
 
 
 class Installment(BaseModel):
-    table_name: ClassVar[str] = "installment"
+    table_name: ClassVar[str] = "installments"
     installment_id: int
     transaction_id: int
     installment_number: int

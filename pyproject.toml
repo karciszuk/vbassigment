@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools"]
+
+[project]
+name = "viabill-analysis"
+version = "0.1.0"
+dependencies = [
+    "pandas",
+    "matplotlib",
+    "pydantic",
+    "jupyter",
+    ]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "notebook"
+    ]
