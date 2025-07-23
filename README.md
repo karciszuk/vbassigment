@@ -13,12 +13,18 @@ python -m venv .venv
 ```
 source .venv/Scripts/activate
 ```
-### 3. Install dependencies:
+### 3. Install as editable:
 ```
-pip install -r requirements.txt
+pip install -e .
 ```
 
-### 4. Run notebooks:
+### 4. Create .env file based on .env.example:
+```
+PYTHONPATH = 'path to root folder'
+DB_PATH = 'name of db file in root folder'
+```
+
+### 5. Run notebooks:
 ```
 jupyter notebook
 ```
