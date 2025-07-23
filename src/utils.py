@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def smart_format(x, pos):
+def smart_format(x: int, pos) -> str:
     if x >= 1000000:
         return f"{x / 1000000:.1f}M"
     elif x >= 1000:
@@ -28,7 +28,7 @@ def group_by_column(
     target_column: str,
     column: str,
     drop_column: str = None,
-):
+) -> pd.DataFrame:
     bins, labels = create_labels(bins_inc)
 
     if drop_column:
@@ -45,7 +45,7 @@ def group_by_column(
     return df
 
 
-def dpd_calc(df):
+def dpd_calc(df: pd.DataFrame) -> pd.DataFrame:
     scheduled_date = pd.to_datetime(df["scheduled_date"])
     payment_date = pd.to_datetime(df["payment_date"])
     today = pd.Timestamp.today()

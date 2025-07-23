@@ -13,7 +13,7 @@ class User(BaseModel):
 
 
 class Transaction(BaseModel):
-    table_name: ClassVar[str] = "transaction"
+    table_name: ClassVar[str] = "transactions"
     transaction_id: int
     user_id: int
     merchant_id: int
