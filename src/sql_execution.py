@@ -32,5 +32,5 @@ class SQL_Executor:
         assert len(df) > 0, "Empty dataset"
 
     def __del__(self):
-        if hasattr(self, 'conn'):
+        if hasattr(self, "conn"):
             self.conn.close()
