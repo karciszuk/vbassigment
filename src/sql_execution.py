@@ -1,14 +1,11 @@
 import sqlite3
 import pandas as pd
-import os
-from dotenv import load_dotenv, find_dotenv
-
-load_dotenv(find_dotenv())
+from src.config import DB_PATH
 
 
 class SQL_Executor:
     def __init__(self):
-        self.db_path = os.path.join(os.getenv("PYTHONPATH"), os.getenv("DB_PATH"))
+        self.db_path = DB_PATH
         self.conn = self.create_connection()
 
     def create_connection(self) -> sqlite3.Connection:
