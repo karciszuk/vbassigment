@@ -1,9 +1,9 @@
 import sqlite3
 import pandas as pd
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-load_dotenv()
+load_dotenv(find_dotenv())
 
 
 class SQL_Executor:
@@ -19,38 +19,18 @@ class SQL_Executor:
             print(f"Connection failed: {e}")
             raise
 
-    def execute_query(self, query: str) -> None:
+    def execute_query(self, query: str) -> pd.DataFrame:
         try:
             df = pd.read_sql_query(query, self.conn)
+            self.validate_query_results(df)
             return df
         except sqlite3.Error as e:
             print(f"Query failed: {e}")
             raise
 
-    def cleanup(self) -> None:
-        if self.conn:
+    def validate_query_results(self, df: pd.DataFrame) -> None:
+        assert len(df) > 0, "Empty dataset"
+
+    def __del__(self):
+        if hasattr(self, 'conn'):
             self.conn.close()
-        return True
-
-
-if __name__ == "__main__":
-    test = SQL_Executor()
-    print(
-        test.execute_query(
-            """
-        SELECT * 
-        FROM transactions
-        WHERE user_id = 1
-        """
-        )
-    )
-
-    print(
-        test.execute_query(
-            """
-        SELECT * 
-        FROM installments
-        WHERE transaction_id = 4
-        """
-        )
-    )

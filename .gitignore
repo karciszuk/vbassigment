@@ -7,3 +7,4 @@ viabill.db
 .pytest_cache
 .ruff_cache
 .git
+viabill_analysis.egg-info

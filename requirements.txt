@@ -1,7 +1,0 @@
-pandas
-numpy
-matplotlib
-pydantic
-jupyter
-dotenv
-ruff
