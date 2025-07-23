@@ -1,6 +1,6 @@
 import sqlite3
 import pandas as pd
-from src.config import DB_PATH
+from vb.config import DB_PATH
 
 
 class SQL_Executor:
