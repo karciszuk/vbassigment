@@ -1,7 +1,7 @@
 from unittest.mock import patch, MagicMock
 import pytest
 import sqlite3
-from src.sql_execution import SQL_Executor
+from src.vb.sql_execution import SQL_Executor
 
 
 @pytest.fixture
